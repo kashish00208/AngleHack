@@ -34,3 +34,4 @@ export const defaultConfig : Config = {
     planningAgentType: AgentType.DEFAULT,
     models: {},
 }
+export default defaultConfig;
