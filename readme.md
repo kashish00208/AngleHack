@@ -12,14 +12,6 @@ npm install portia-sdk-typescript
 
 ```typescript
 
-import {potiaAi } from 'portia-sdk-typescript';
-const portiai = new portiaAi({baseUrl:""});
 
-
-async function main(){
-    const completion = await flowise.createPrediction({
-        //
-    })
-}
 
 ```
