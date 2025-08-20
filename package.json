@@ -1,0 +1,15 @@
+{
+  "name": "anglehack",
+  "version": "1.0.0",
+  "description": "PortiaAI-typescriptSDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc -b && node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.9.2"
+  }
+}
