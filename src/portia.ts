@@ -167,3 +167,5 @@ export class Portia {
 
   }
 }
+
+export default Portia;

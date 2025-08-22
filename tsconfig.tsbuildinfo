@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/portia-sdk.ts"],"version":"5.9.2"}
+{"root":["./src/baseproducttelemetry.ts","./src/toolragistery.ts","./src/config.ts","./src/enduser.ts","./src/exicutionhooks.ts","./src/index.ts","./src/portia.ts","./src/portiatoolragistry.ts","./src/storage.ts","./src/tools.ts"],"version":"5.9.2"}
