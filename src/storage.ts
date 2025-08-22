@@ -3,10 +3,16 @@ import { EndUser } from "./endUser";
 export interface Storage {
   saveEndUser(user: EndUser): EndUser;
   asaveEndUser(user: EndUser): Promise<EndUser>;
+  asavePlanRun(planRun: any): Promise<any>;
+  savePlanRun(planRun: any): any;
+  getPlan(id: string): any;
+  savePlan(plan: any): any;
 }
 
 export class InMemoryStorage implements Storage {
   private users: EndUser[] = [];
+  private planRuns: Record<string, any> = {};
+  private plans: Record<string, any> = {};
   saveEndUser(user: EndUser): EndUser {
     this.users.push(user);
     return user;
@@ -15,26 +21,23 @@ export class InMemoryStorage implements Storage {
     this.users.push(user);
     return user;
   }
-}
+  savePlanRun(planRun: any): any {
+    this.planRuns[planRun.id] = planRun;
+    return planRun;
+  }
+   asavePlanRun(planRun: any): Promise<any> {
+    this.planRuns[planRun.id] = planRun;
+    return Promise.resolve(planRun);
+  }
+    getPlanRun(id: string): any {
+    return this.planRuns[id];
+  }
 
-export class DiskFileStorage implements Storage {
-  constructor(private dir: string = "./data") {}
-  saveEndUser(user: EndUser): EndUser {
-    console.log(`Saving ${user.externalId} to disk`);
-    return user;
+  getPlan(id: string): any {
+    return this.plans[id];
   }
-  async asaveEndUser(user: EndUser): Promise<EndUser> {
-    return this.saveEndUser(user);
-  }
-}
-
-export class CloudStorage implements Storage {
-  constructor(private config: any) {}
-  saveEndUser(user: EndUser): EndUser {
-    console.log(`Saving ${user.externalId} to cloud`);
-    return user;
-  }
-  async asaveEndUser(user: EndUser): Promise<EndUser> {
-    return this.saveEndUser(user);
+  savePlan(plan: any) {
+    this.plans[plan.id] = plan;
+    return plan;
   }
 }

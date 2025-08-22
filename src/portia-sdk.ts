@@ -1,10 +1,35 @@
 import { Config, defaultConfig, storageClass } from "./config";
 import { Tool, ToolRegistry } from "./portiaToolRagistry";
 import { ExicutionHooks } from "./exicutionhooks";
-import {BaseProductTelemetry , NoopTelemetry} from './BaseProductTelemetry'
-import { InMemoryStorage, DiskFileStorage, CloudStorage, Storage } from "./storage";
+import { BaseProductTelemetry, NoopTelemetry } from "./BaseProductTelemetry";
+import {
+  InMemoryStorage,
+  Storage,
+} from "./storage";
 import { EndUser } from "./endUser";
 import { DefaultToolRegistry } from "./ToolRagistery";
+
+export interface Plan {
+  id: string;
+  query: string;
+  steps: any[];
+  inputs?: Record<string, any>;
+}
+
+export interface PlanRun {
+  id: string;
+  planId: string;
+  endUserId?: string;
+  outputs?: Record<string, any>;
+  state:
+    | "NOT_STARTED"
+    | "IN_PROGRESS"
+    | "COMPLETE"
+    | "FAILED"
+    | "NEED_CLARIFICATION"
+    | "READY_TO_RESUME";
+  currentStepIndex?: number;
+}
 
 export class Portia {
   private config: Config;
@@ -40,18 +65,7 @@ export class Portia {
       this.toolRegistry = new DefaultToolRegistry(this.config);
     }
 
-    // 4. Storage (simplified)
-    switch (this.config.storageClass) {
-      case storageClass.DISK:
-        this.storage = new DiskFileStorage(this.config.storageDir);
-        break;
-      case storageClass.CLOUD:
-        this.storage = new CloudStorage(this.config);
-        break;
-      case storageClass.MEMORY:
-      default:
-        this.storage = new InMemoryStorage();
-    }
+    this.storage = new InMemoryStorage();
   }
 
   // Sync user init
@@ -84,5 +98,72 @@ export class Portia {
     }
 
     return await this.storage.asaveEndUser(endUser);
+  }
+
+  async plan(
+    query: string,
+    options?: {
+      tools?: Tool[] | string[];
+      endUser?: string | EndUser;
+      inputs?: Record<string, any>;
+    }
+  ): Promise<Plan> {
+    const tools = options?.tools || this.toolRegistry.matchTools(query);
+    const plan: Plan = {
+      id: `plan-${Date.now()}`,
+      query,
+      steps: [],
+      inputs: options?.inputs,
+    };
+    this.storage.savePlan(plan);
+    return plan;
+  }
+
+  async run(
+    query: string,
+    options?: {
+      tools?: Tool[] | string[];
+      endUser?: string | EndUser;
+      inputs?: Record<string, any>;
+    }
+  ): Promise<PlanRun> {
+    const plan = await this.plan(query, options);
+    const endUser = await this.ainitializeEndUser(options?.endUser);
+    const planRun: PlanRun = {
+      id: `planrun-${Date.now()}`,
+      planId: plan.id,
+      endUserId: endUser.id,
+      state: "NOT_STARTED",
+      currentStepIndex: 0,
+      outputs: {},
+    };
+    this.storage.savePlanRun(planRun);
+    return this.executePlanRun(plan, planRun);
+  }
+
+  async resume(planRun: PlanRun): Promise<PlanRun> {
+    if (
+      planRun.state !== "READY_TO_RESUME" &&
+      planRun.state !== "NEED_CLARIFICATION"
+    ) {
+      throw new Error("PlanRun is not in a resumable state");
+    }
+    return this.executePlanRun(
+      await this.storage.getPlan(planRun.planId),
+      planRun
+    );
+  }
+
+  private async executePlanRun(plan: Plan, planRun: PlanRun): Promise<PlanRun> {
+    planRun.state = "IN_PROGRESS";
+    for (let i = planRun.currentStepIndex || 0; i < plan.steps.length; i++) {
+      const step = plan.steps[i];
+      console.log(`Executing step: ${JSON.stringify(step)}`);
+      planRun.currentStepIndex = i;
+    }
+    planRun.state = "COMPLETE";
+    this.storage.savePlanRun(planRun);
+    return planRun;
+
   }
 }

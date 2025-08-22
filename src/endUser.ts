@@ -1,3 +1,3 @@
 export class EndUser {
-    constructor(public externalId:string){}
+    constructor(public id: string) {}
 }
