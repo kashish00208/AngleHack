@@ -19,19 +19,25 @@ export interface GenerativeModelsConfig {
     introspectionmodel?:string,
     summarizermodel?:string,
 }
+export enum storageClass{
+    MEMORY = "MEMORY",
+    DISK = "DISK",
+    CLOUD = "CLOUD"
+}
 export interface Config {
     portiaApiKey?:string;
-    openaiApiKey?:string;
-    anthropicApiKey?:string;
     googleApiKey?:string;
-    llmProviders?:string;
-    models?:GenerativeModelsConfig;
+    apiURL ?: string,
+    storageClass ?: storageClass,
+    storageDir ?: string,
     executionAgentType?: AgentType;
     planningAgentType?: AgentType;
 }
-export const defaultConfig : Config = {
-    executionAgentType: AgentType.DEFAULT,
-    planningAgentType: AgentType.DEFAULT,
-    models: {},
+export function defaultConfig() : Config  {
+   return{
+    portiaApiKey : process.env.PORTIA_API_KEY || "",
+    apiURL : "https://api.portia.ai",
+    storageClass : storageClass.MEMORY,
+   }
 }
 export default defaultConfig;
