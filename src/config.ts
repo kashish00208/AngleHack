@@ -21,14 +21,15 @@ export interface GenerativeModelsConfig {
 }
 export enum storageClass{
     MEMORY = "MEMORY",
-    DISK = "DISK",
-    CLOUD = "CLOUD"
 }
 export interface Config {
     portiaApiKey?:string;
     googleApiKey?:string;
     apiURL ?: string,
+    groqApiKey?: string;
+    model?: string;
     storageClass ?: storageClass,
+    llmProvider?: "openai" | "groq" | "anthropic";
     storageDir ?: string,
     executionAgentType?: AgentType;
     planningAgentType?: AgentType;
@@ -38,6 +39,9 @@ export function defaultConfig() : Config  {
     portiaApiKey : process.env.PORTIA_API_KEY || "",
     apiURL : "https://api.portia.ai",
     storageClass : storageClass.MEMORY,
+    llmProvider: "groq",
+    groqApiKey: process.env.GROQ_API_KEY || "",
+    model: process.env.MODEL || "",
    }
 }
 export default defaultConfig;

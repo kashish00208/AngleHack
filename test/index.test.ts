@@ -1,8 +1,7 @@
-// test-portia.ts
-import portiaSDK from "../src/portia";
+import PortiaSDK from "../src/main"
 
 async function main() {
-  const portia = new portiaSDK();
+  const portia = new PortiaSDK();
 
   const plan = await portia.plan("Add 1 + 2");
   console.log("Plan:", plan);

@@ -9,7 +9,6 @@ import {
 import { EndUser } from "./endUser";
 import { DefaultToolRegistry } from "./ToolRagistery";
 
-
 export interface Plan {
   id: string;
   query: string;

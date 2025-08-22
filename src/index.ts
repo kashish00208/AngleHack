@@ -1,10 +1,6 @@
-// import portiaSDK from "./portia";
-// export default portiaSDK;
-
-import portiaSDK from "../src/portia";
-
-async function main() {
-  const portia = new portiaSDK();
+import PortiaSDK from "./main"
+async function main(params: any) {
+  const portia = new PortiaSDK();
 
   const plan = await portia.plan("Add 1 + 2");
   console.log("Plan:", plan);
@@ -22,5 +18,3 @@ async function main() {
     }
   }
 }
-
-main();
