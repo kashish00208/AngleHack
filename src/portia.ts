@@ -2,13 +2,9 @@ import { Config, defaultConfig, storageClass } from "./config";
 import { Tool, ToolRegistry } from "./portiaToolRagistry";
 import { ExicutionHooks } from "./exicutionhooks";
 import { BaseProductTelemetry, NoopTelemetry } from "./BaseProductTelemetry";
-import {
-  InMemoryStorage,
-  Storage,
-} from "./storage";
+import { InMemoryStorage, Storage } from "./storage";
 import { EndUser } from "./endUser";
 import { DefaultToolRegistry } from "./ToolRagistery";
-
 
 export interface Plan {
   id: string;
@@ -110,12 +106,47 @@ export class PortiaSDK {
     }
   ): Promise<Plan> {
     const tools = options?.tools || this.toolRegistry.matchTools(query);
+    let steps: any[] = [];
+
+    if (this.config.llmProvider === "groq" && this.config.groqApiKey) {
+      const resp = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.config.groqApiKey}`,
+          },
+          body: JSON.stringify({
+            model: this.config.model || "llama-3.1-70b-versatile",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a planner. Break the query into structured steps.",
+              },
+              { role: "user", content: query },
+            ],
+          }),
+        }
+      );
+
+      const json = await resp.json();
+      const content = json.choices?.[0]?.message?.content || "";
+
+      steps = content
+        .split("\n")
+        .filter(Boolean)
+        .map((s:any, i:number) => ({ index: i, action: s }));
+    }
+
     const plan: Plan = {
       id: `plan-${Date.now()}`,
       query,
-      steps: [],
+      steps,
       inputs: options?.inputs,
     };
+
     this.storage.savePlan(plan);
     return plan;
   }
@@ -165,7 +196,6 @@ export class PortiaSDK {
     planRun.state = "COMPLETE";
     this.storage.savePlanRun(planRun);
     return planRun;
-
   }
 }
 

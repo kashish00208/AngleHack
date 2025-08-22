@@ -1,5 +1,4 @@
-import PortiaSDK from "../src/main"
-
+import PortiaSDK from "../src/Portia"
 async function main() {
   const portia = new PortiaSDK();
 
@@ -12,8 +11,11 @@ async function main() {
   try {
     await portia.resume(planRun);
   } catch (e) {
-    console.log("Resume error (expected):", e.message);
+    if (e instanceof Error) {
+      console.log("Resume error (expected):", e.message);
+    } else {
+      console.log("Resume error (expected):", e);
+    }
   }
 }
-
-main();
+main()
