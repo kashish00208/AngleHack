@@ -31,10 +31,10 @@ A **TypeScript SDK** for [Portia](https://docs.portialabs.ai/), built to make it
 
 # working SDK with core functionality of python based SDK
 <p align="center">
-  <img src="/work.png" alt="Portia SDK Demo" width="700"/>
+  <img src="public/work.png" alt="Portia SDK Demo" width="700"/>
 </p>
 
 <p align="center">
-  <img src="/example.png" alt="Portia SDK Demo" width="700"/>
+  <img src="public/example.png" alt="Portia SDK Example" width="700"/>
 </p>
 
