@@ -1,6 +1,6 @@
 # Portia TypeScript SDK  
 
-A **TypeScript SDK** for [Portia](https://portia.ai), built to make it simple for developers to integrate Portia’s planning and execution engine into their applications.  
+A **TypeScript SDK** for [Portia](https://docs.portialabs.ai/), built to make it simple for developers to integrate Portia’s planning and execution engine into their applications.  
 
  
 ---
@@ -31,10 +31,10 @@ A **TypeScript SDK** for [Portia](https://portia.ai), built to make it simple fo
 
 # working SDK with core functionality of python based SDK
 <p align="center">
-  <img src="./work.png" alt="Portia SDK Demo" width="700"/>
+  <img src="/work.png" alt="Portia SDK Demo" width="700"/>
 </p>
 
 <p align="center">
-  <img src="./example.png" alt="Portia SDK Demo" width="700"/>
+  <img src="/example.png" alt="Portia SDK Demo" width="700"/>
 </p>
 
